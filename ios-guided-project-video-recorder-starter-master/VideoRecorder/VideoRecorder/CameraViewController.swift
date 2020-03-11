@@ -7,8 +7,16 @@
 //
 
 import UIKit
+import AVFoundation
 
 class CameraViewController: UIViewController {
+    
+    
+    //TODO: Add Capture Session
+    
+    
+    
+    //TODO: Add Movie Output
 
     @IBOutlet var recordButton: UIButton!
     @IBOutlet var cameraView: CameraPreviewView!
