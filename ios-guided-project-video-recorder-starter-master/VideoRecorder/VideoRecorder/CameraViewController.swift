@@ -17,6 +17,7 @@ class CameraViewController: UIViewController {
     
     
     //TODO: Add Movie Output
+    lazy private var fileOutput = AVCaptureMovieFileOutput()
 
     @IBOutlet var recordButton: UIButton!
     @IBOutlet var cameraView: CameraPreviewView!
@@ -63,6 +64,14 @@ class CameraViewController: UIViewController {
         //TODO: Add Microphone
         
         
+        //TODO: Add Outputs
+        guard captureSession.canAddOutput(fileOutput) else {
+            fatalError("Cannot save movie to capture session")
+        }
+        captureSession.addOutput(fileOutput)
+        
+        
+        
         //close
         captureSession.commitConfiguration()
         
@@ -92,6 +101,7 @@ class CameraViewController: UIViewController {
     
 
     @IBAction func recordButtonPressed(_ sender: Any) {
+        
 
 	}
 	
