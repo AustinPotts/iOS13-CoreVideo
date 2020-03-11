@@ -73,6 +73,14 @@ class CameraViewController: UIViewController {
         
         
         //TODO: Add Microphone
+        let microphone = bestAudio()
+        guard let audioInput = try? AVCaptureDeviceInput(device: microphone),
+            captureSession.canAddInput(audioInput) else {
+                fatalError("Can't create and add input from microphone")
+        }
+        captureSession.addInput(audioInput)
+        
+        
         
         
         //TODO: Add Outputs
@@ -88,6 +96,13 @@ class CameraViewController: UIViewController {
         
         cameraView.session = captureSession
         
+    }
+    
+    private func bestAudio() -> AVCaptureDevice {
+        if let device = AVCaptureDevice.default(for: .audio) {
+            return device
+        }
+        fatalError("No audio")
     }
     
     private func bestCamera() -> AVCaptureDevice {
@@ -160,8 +175,11 @@ class CameraViewController: UIViewController {
     func replayMovie() {
         guard let player = player else { return }
 
+        //Seek to beginning first
         player.seek(to: CMTime.zero)
         //CMTime(seconds: 2, preferredTimescale: 30) // 30 Frames per second (FPS)
+        
+        //play from beginning
         player.play()
     }
     
