@@ -18,6 +18,12 @@ class CameraViewController: UIViewController {
     
     //TODO: Add Movie Output
     lazy private var fileOutput = AVCaptureMovieFileOutput()
+    
+    
+    //Player
+    var player: AVPlayer!
+    
+
 
     @IBOutlet var recordButton: UIButton!
     @IBOutlet var cameraView: CameraPreviewView!
@@ -131,6 +137,29 @@ class CameraViewController: UIViewController {
         recordButton.isSelected = fileOutput.isRecording
     }
     
+    //Play Movie
+    func playMovie(url: URL) {
+        player = AVPlayer(url: url)
+        let playerLayer = AVPlayerLayer(player: player)
+        var topRect = view.bounds
+        topRect.size.height = topRect.height / 4
+        topRect.size.width = topRect.width / 4
+        topRect.origin.y = view.layoutMargins.top
+
+        playerLayer.frame = topRect
+        view.layer.addSublayer(playerLayer)
+
+        player.play()
+    }
+    
+    func replayMovie() {
+        guard let player = player else { return }
+
+        player.seek(to: CMTime.zero)
+        //CMTime(seconds: 2, preferredTimescale: 30) // 30 Frames per second (FPS)
+        player.play()
+    }
+    
 }
 
 extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
@@ -142,6 +171,10 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         }
         
         updateViews()
+        
+        
+        //Play Movie: TODO
+        playMovie(url: outputFileURL)
     }
     
     func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
