@@ -13,7 +13,7 @@ class CameraViewController: UIViewController {
     
     
     //TODO: Add Capture Session
-    
+    lazy var captureSession = AVCaptureSession()
     
     
     //TODO: Add Movie Output
@@ -27,8 +27,69 @@ class CameraViewController: UIViewController {
 
 		// Resize camera preview to fill the entire screen
 		cameraView.videoPlayerView.videoGravity = .resizeAspectFill
+        setUpCaptureSession()
 	}
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        captureSession.startRunning()
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        captureSession.stopRunning()
+    }
+    
+    private func setUpCaptureSession(){
+        let camera = bestCamera()
+        
+        //open
+        captureSession.beginConfiguration()
+        
+        //Add inputs
+        guard let cameraInput = try? AVCaptureDeviceInput(device: camera),
+            captureSession.canAddInput(cameraInput) else { fatalError("Cant create camera with current input") }
+        
+        captureSession.addInput(cameraInput)
+        
+        if captureSession.canSetSessionPreset(.hd1920x1080) {
+            captureSession.sessionPreset = .hd1920x1080 //1080p
+        }
+        
+        
+        //TODO: Add Microphone
+        
+        
+        //close
+        captureSession.commitConfiguration()
+        
+        cameraView.session = captureSession
+        
+    }
+    
+    private func bestCamera() -> AVCaptureDevice {
+
+        // ultra wide lens 0.5
+        if let device = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back) {
+            return device
+        }
+        
+        
+        // wide angle lens (available on all iphones)
+        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+            return device
+        }
+        
+        
+        //Fatal Error if none of these exist
+        fatalError("No cameras on device ")
+        
+        
+    }
+    
 
     @IBAction func recordButtonPressed(_ sender: Any) {
 
