@@ -35,8 +35,13 @@ class CameraViewController: UIViewController {
 		// Resize camera preview to fill the entire screen
 		cameraView.videoPlayerView.videoGravity = .resizeAspectFill
         setUpCaptureSession()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture(_:)))
+        view.addGestureRecognizer(tapGesture)
 	}
 
+    
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -160,6 +165,19 @@ class CameraViewController: UIViewController {
         player.play()
     }
     
+    @objc func handleTapGesture(_ tapGesture: UITapGestureRecognizer) {
+    print("tap")
+        // Ended state
+    switch(tapGesture.state) {
+        
+    case .ended:
+        replayMovie()
+    default:
+        print("Handled other states: \(tapGesture.state)")
+    }
+    
+    
+  }
 }
 
 extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
